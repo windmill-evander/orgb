@@ -1,10 +1,17 @@
-// Use .apex files to store anonymous Apex.
-// You can execute anonymous Apex in VS Code by selecting the
-//     apex text and running the command:
-//     SFDX: Execute Anonymous Apex with Currently Selected Text
-// You can also execute the entire file by running the command:
-//     SFDX: Execute Anonymous Apex with Editor Contents
+        // Query all Account records
+        List<Account> allAccounts = [SELECT Id, Description FROM Account];
 
-string tempvar = 'Enter_your_name_here';
-System.debug('Hello World!');
-System.debug('My name is ' + tempvar);
+        // List to hold accounts with description 'tmp'
+        List<Account> accountsToDelete = new List<Account>();
+
+        // Loop through all accounts and filter based on description
+        for (Account acc : allAccounts) {
+            if (acc.Description != null && acc.Description == 'tmp') {
+                accountsToDelete.add(acc);
+            }
+        }
+
+        // Delete the accounts if any found
+        if (!accountsToDelete.isEmpty()) {
+            delete accountsToDelete;
+        }
