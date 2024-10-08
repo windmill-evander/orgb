@@ -1,5 +1,5 @@
 <apex:page controller="SyncProductController" action="{!syncProducts}">
     <script>
-        window.location.href = '/lightning/o/Product2/list'; // Adjust URL as needed
+        window.location.href = '/lightning/o/Product2/list';
     </script>
 </apex:page>
