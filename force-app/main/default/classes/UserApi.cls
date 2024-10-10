@@ -1,51 +1,58 @@
+/****************************************************************************************   
+* File Name   : UserApi.cls
+* Description : Product 관련 API
+* Test Class  : UserApi_Test.cls
+* Author      : Evander  
+* Modification Log  
+* ===============================================================  
+* Ver  Date        Author        Modification  
+* ===============================================================  
+* 1.0  2024.10.07  Evander        Create  
+**************************************************************************************** 
+* TODO  
+* 테스트 작성  
+****************************************************************************************/ 
 @RestResource(urlMapping='/product2/*')
 global with sharing class UserApi {
+    
+    /** 
+    * Description : /product2/sync doPost 메소드
+    * Author : Evander 
+    **/ 
     @HttpPost
     global static String doPost() {
         RestRequest req = RestContext.request;
 
         if (req.requestURI.endsWith('/sync')) {
-            String requestBody = req.requestBody.toString();
-            System.debug('Request Body: ' + requestBody);
-            return handleSync(requestBody);
+            return handleSync(req.requestBody.toString());
         } else {
             return 'Invalid endpoint';
         }
     }
-
+    
+    /** 
+    * Description : request body를 Product 리스트로 변환 후 Custom_External_Id__c 필드를 기준으로 upsert
+    * Author : Evander 
+    * @Param requestBody 
+    * @return String 
+    **/ 
     private static String handleSync(String requestBody) {
-        try {
-            List<Product2> receivedProducts = (List<Product2>) JSON.deserialize(requestBody, List<Product2>.class);
+    //     try {
+    //         List<Product2> receivedProducts = (List<Product2>) JSON.deserialize(requestBody, List<Product2>.class);
+            
+    //         for (Product2 receivedProduct : receivedProducts) {
+    //             receivedProduct.Custom_External_Id__c = receivedProduct.Id;
+    //             receivedProduct.Id = null;
+    //         }
 
-            Set<String> names = new Set<String>();
-            Map<String, Decimal> stockUpdates = new Map<String, Decimal>();
-            for (Product2 product : receivedProducts) {
-                if (product.Name != null) {
-                    names.add(product.Name);
-                    stockUpdates.put(product.Name, product.Stock__c);
-                }
-            }
+    //         if (Schema.sObjectType.Product2.isUpdateable()) {
+    //             upsert receivedProducts Custom_External_Id__c;
+    //         }
 
-            List<Product2> products = [
-                SELECT Id, Stock__c, Name
-                FROM Product2
-                WHERE Name IN :names
-                WITH SECURITY_ENFORCED
-            ];
-
-            for (Product2 product : products) {
-                if (stockUpdates.containsKey(product.Name)) {
-                    product.Stock__c = stockUpdates.get(product.Name);
-                }
-            }
-
-            if (Schema.sObjectType.Product2.isUpdateable()) {
-                update products;
-            }
-            return 'Products received successfully in Org B';
-        } catch (Exception e) {
-            System.debug('Deserialization error: ' + e.getMessage());
-            return 'Error during deserialization: ' + e.getMessage();
-        }
+    //         return 'Sync completed successfully.';
+    //     } catch (Exception e) {
+    //         return 'Error: ' + e.getMessage();
+    //     }
+    return '';
     }
 }

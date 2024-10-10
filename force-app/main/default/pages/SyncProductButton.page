@@ -1,0 +1,57 @@
+<apex:page controller="SyncProductController">
+    <apex:form >
+        <apex:actionFunction name="syncProductsAction" action="{!syncProduct}" reRender="pageBlock" oncomplete="syncComplete();" onbeforedomupdate="showSyncingToast();"/>
+    </apex:form>
+
+    <script>
+        window.onload = function() {
+            syncProductsAction();
+        };
+
+        function showSyncingToast() {
+            showToast('Syncing in progress...', 'info');
+        }
+
+        function syncComplete() {
+            showToast('Sync completed successfully.', 'success');
+            setTimeout(function() {
+                window.location.href = '/lightning/o/Product2/list';
+            }, 2000);
+        }
+
+        function showToast(message, type) {
+            var toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+        }
+    </script>
+
+    <style>
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            opacity: 0.9;
+            z-index: 1000;
+        }
+
+        .toast.info {
+            background-color: #2196F3; /* Blue */
+        }
+
+        .toast.success {
+            background-color: #4CAF50; /* Green */
+        }
+
+        .toast.error {
+            background-color: #F44336; /* Red */
+        }
+    </style>
+</apex:page>
